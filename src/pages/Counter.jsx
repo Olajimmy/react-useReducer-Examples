@@ -1,84 +1,53 @@
-// import { useReducer } from "react";
+import { useReducer, useState } from "react";
+import { Link } from "react-router";
 
-// function Counter() {
-//   // dispatch replaces setCount when we move to reducer rather than state
-//   // we also need to pass in the reducer function -
-//   //      the reducer function tells us how to update the state
-//   const [count, dispatch] = useReducer(reducer, 0);
-
-//   // define the reducer
-//   // normally, we would do this in a different module and import it
-//   // for this first example, because it is pretty straightforward, we'll define it here
-//   function reducer(state, action) {
-//     switch (action.type) {
-//       case "increment": {
-//         return state + 1;
-//       }
-//       case "decrement": {
-//         return state - 1;
-//       }
-//       default: {
-//         throw Error("Unknown Action: " + action.type);
-//       }
-//     }
-//   }
-
-//   return (
-//     <div>
-//       <h1>{count}</h1>
-//       <ActionButton type="increment" dispatch={dispatch}>
-//         Increment
-//       </ActionButton>
-//       <br />
-//       <ActionButton type="decrement" dispatch={dispatch}>
-//         Decrement
-//       </ActionButton>
-//     </div>
-//   );
-// }
-
-// function ActionButton({ children, dispatch, type, payload }) {
-//   return (
-//     <button onClick={() => dispatch({ type: type, payload: payload })}>
-//       {children}
-//     </button>
-//   );
-// }
-
-// export default Counter;
-
-import { useReducer } from "react";
 function Counter() {
-  //dispach replaces setCount whe we move to reducer rather than state
-  //we also need to pass in the reducer function
-  //the reducer function tell us how to update the state
+  // dispatch replaces setCount when we move to reducer rather than state
+  // we also need to pass in the reducer function -
+  //      the reducer function tells us how to update the state
   const [count, dispatch] = useReducer(reducer, 0);
-  //define the reducer
-  //normally we woulod do this in a different module and then import it
-  //for this example becaus eit s straight forward, we'll define it
+  // setState - this returns an array with the state and the setter
+  //      initial value is passed in
+  const [step, setStep] = useState(1);
+
+  // define the reducer
+  // normally, we would do this in a different module and import it
+  // for this first example, because it is pretty straightforward, we'll define it here
   function reducer(state, action) {
     switch (action.type) {
       case "increment": {
-        return state + 1;
+        return state + action.payload.step;
       }
       case "decrement": {
-        return state - 1;
+        return state - action.payload.step;
       }
       default: {
-        throw Error("Unknown Action:" + action.type);
+        throw Error("Unknown Action: " + action.type);
       }
     }
   }
+
   return (
     <div>
+      <Link to="/">Go Home</Link>
       <h1>{count}</h1>
-      <ActionButton type="increment" dispatch={dispatch}>
+      <ActionButton
+        type="increment"
+        dispatch={dispatch}
+        payload={{ step: step }}
+      >
         Increment
       </ActionButton>
       <br />
-      <ActionButton type="decrement" dispatch={dispatch}>
+      <ActionButton
+        type="decrement"
+        dispatch={dispatch}
+        payload={{ step: step }}
+      >
         Decrement
       </ActionButton>
+      <br />
+      <NumberInput state={step} setState={setStep} />
     </div>
   );
 }
@@ -90,4 +59,17 @@ function ActionButton({ children, dispatch, type, payload }) {
     </button>
   );
 }
+
+function NumberInput({ state, setState }) {
+  return (
+    <input
+      className="numberInput"
+      type="number"
+      step="1"
+      value={state}
+      onChange={(evt) => setState(Number(evt.target.value))}
+    />
+  );
+}
+
 export default Counter;
